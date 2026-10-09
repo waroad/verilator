@@ -1,0 +1,6 @@
+%Error-UNSUPPORTED: t/t_assert_iff_seq_unsup.v:17:33: Unsupported: multi-cycle sequence in complex property expression
+                                                    : ... note: In instance 't'
+   17 |   assert property (c iff (a |-> ##1 b));
+      |                                 ^~
+                    ... For error description see https://verilator.org/warn/UNSUPPORTED?v=latest
+%Error: Exiting due to

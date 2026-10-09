@@ -1716,6 +1716,22 @@ private:
         VL_RESTORER(m_underCover);
         m_underCover = VN_IS(nodep->backp(), Cover);
         iterate(nodep->propp());
+        // V3Assert only handles a lowered sequence (AstPExpr) that is the whole property.
+        // A nested one, or a sequence V3AssertNfa left unlowered (e.g. in an operand of
+        // [=N]), would reach later passes as an expression.
+        AstNode* const propp = nodep->propp();
+        const AstSampled* const sampledp = VN_CAST(propp, Sampled);
+        const AstNode* const topp = sampledp ? sampledp->exprp() : propp;
+        const AstNodeExpr* nestedp = nullptr;
+        if (propp->exists([&](const AstNodeExpr* const exprp) {
+                nestedp = exprp;
+                return (VN_IS(exprp, PExpr) && exprp != topp) || VN_IS(exprp, SExpr);
+            })) {
+            nestedp->v3warn(E_UNSUPPORTED,
+                            "Unsupported: multi-cycle sequence in complex property expression");
+            propp->replaceWith(new AstConst{propp->fileline(), AstConst::BitFalse{}});
+            VL_DO_DANGLING(pushDeletep(propp), propp);
+        }
     }
     void visit(AstPExpr* nodep) override {
         // V3AssertNfa handles multi-cycle property expressions before this pass,
