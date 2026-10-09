@@ -111,6 +111,10 @@ module t (
   wire logic [9:0] SHIFTRS_4_B = signed'(SHIFTRS_4_A) >>> 2;
   assign SHIFTRS_4_A = {rand_a[3:0], SHIFTRS_4_B[7:2]};
 
+  `signal(SHIFTRS_5_A, 10);  // UNOPTFLAT
+  wire logic [9:0] SHIFTRS_5_B = signed'(SHIFTRS_5_A) >>> 2;
+  assign SHIFTRS_5_A = {rand_a[8], SHIFTRS_5_B[9], rand_a[7:0]};
+
   `signal(SHIFTRS_VARIABLE, 2);  // UNOPTFLAT
   assign SHIFTRS_VARIABLE = signed'(rand_a[1:0] ^ ({1'b0, SHIFTRS_VARIABLE[1]}) >>> rand_b[0]);
 

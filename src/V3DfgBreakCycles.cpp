@@ -736,8 +736,10 @@ class TraceDriver final : public DfgVisitor {
             }
             // If the traced bits are wholly in the extension
             if (m_lsb >= lowerWidth) {
+                const uint32_t signBit = lhsp->width() - 1;
+                if (m_msb == m_lsb) RETURN_RESULT_TAIL(lhsp, signBit, signBit);
                 DfgExtendS* const resp = make<DfgExtendS>(vtxp, m_msb - m_lsb + 1);
-                resp->srcp(trace(lhsp, lhsp->width() - 1, lhsp->width() - 1));
+                resp->srcp(trace(lhsp, signBit, signBit));
                 RETURN_RESULT(resp);
             }
             // The traced bits span both sides
